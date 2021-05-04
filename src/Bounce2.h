@@ -224,12 +224,22 @@ protected:
 
 	uint8_t pin;
 
-	virtual bool readCurrentState() { return digitalRead(pin); }
+	virtual bool readCurrentState() {
+#ifndef readPinFunction
+		digitalRead(pin);
+#else
+		readPinFunction(pin);
+#endif
+	}
 	virtual void setPinMode(int pin, int mode) {
+#ifndef setPinModeFunction
 #if defined(ARDUINO_ARCH_STM32F1)
 		pinMode(pin, (WiringPinMode)mode);
 #else
 		pinMode(pin, mode);
+#endif
+#else
+		setPinModeFunction(pin, mode);
 #endif
 	}
 
